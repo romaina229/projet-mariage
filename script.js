@@ -11,8 +11,11 @@ let activeFilters = {
     maxPrice: null
 };
 
+let isUserLoggedIn = false; // NOUVEAU
+
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
+    checkAuthentication(); // NOUVEAU
     loadCategories();
     loadExpenses();
     loadStats();
@@ -459,6 +462,7 @@ async function loadPaymentStatus() {
 
 // Ouvrir le modal
 function openModal() {
+    if (!requireAuth()) return; //NOUVELLE LIGNE
     editingExpenseId = null;
     document.getElementById('modal-title').textContent = 'Nouvelle Dépense';
     document.getElementById('submit-btn-text').textContent = 'Ajouter';
@@ -476,6 +480,7 @@ function closeModal() {
 
 // Éditer une dépense
 async function editExpense(id) {
+    if (!requireAuth()) return; // NOUVELLE LIGNE
     try {
         const response = await fetch(`api.php?action=get_by_id&id=${id}`);
         const result = await response.json();
@@ -561,6 +566,7 @@ async function handleSubmit(event) {
 
 // Basculer le statut de paiement
 async function togglePaid(id) {
+    if (!requireAuth()) return; // NOUVELLE LIGNE 
     try {
         const response = await fetch(`api.php?action=toggle_paid&id=${id}`);
         const result = await response.json();
@@ -585,6 +591,7 @@ async function togglePaid(id) {
 
 // Supprimer une dépense
 async function deleteExpense(id) {
+    if (!requireAuth()) return; // NOUVELLE LIGNE
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
         return;
     }
@@ -752,4 +759,45 @@ function resetFilters() {
     filteredExpenses = [...currentExpenses];
     displayExpenses();
     updateFilterCount();
+}
+
+// Vérifier l'authentification
+async function checkAuthentication() {
+    try {
+        const response = await fetch('auth_api.php?action=check');
+        const result = await response.json();
+        isUserLoggedIn = result.logged_in || false;
+    } catch (error) {
+        console.error('Erreur:', error);
+        isUserLoggedIn = false;
+    }
+}
+
+// Déconnexion
+async function logout() {
+    if (!confirm('Voulez-vous vraiment vous déconnecter ?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('auth_api.php?action=logout');
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Vérifier avant action
+function requireAuth() {
+    if (!isUserLoggedIn) {
+        if (confirm('Vous devez être connecté pour cette action. Se connecter maintenant ?')) {
+            window.location.href = 'login.php';
+        }
+        return false;
+    }
+    return true;
 }

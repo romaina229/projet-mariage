@@ -1,17 +1,46 @@
+<?php
+session_start();
+require_once 'AuthManager.php';
+
+$isLoggedIn = AuthManager::isLoggedIn();
+$currentUser = $isLoggedIn ? AuthManager::getCurrentUser() : null;
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suivi des dépenses - Projet Jésus Pourvoir Ménage</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
         <div class="header">
-            <h1>💍 Budget Mariage</h1>
-            <p style="margin-left: 45px";>Projet Jésus Pourvoir Ménage (PJPM)</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>💍 Budget Mariage</h1>
+                    <p>Projet Jésus Pourvoir Ménage (PJPM)</p>
+                </div>
+                <div class="auth-section">
+                    <?php if ($isLoggedIn): ?>
+                        <div style="text-align: right;">
+                            <p style="margin-bottom: 8px; opacity: 0.9;">
+                                <i class="fas fa-user"></i> <?php echo htmlspecialchars($currentUser['username']); ?>
+                            </p>
+                            <button onclick="logout()" class="btn-logout">
+                                <i class="fas fa-sign-out-alt"></i> Déconnexion
+                            </button>
+                        </div>
+                    <?php else: ?>
+                        <a href="login.php" class="btn-login">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
 
         <div class="nav-tabs">
@@ -24,6 +53,7 @@
             <button class="nav-tab" onclick="switchTab('payments')">
                 💰 Suivi des Paiements
             </button>
+        </div>
         </div>
 
         <!-- Dashboard Tab -->

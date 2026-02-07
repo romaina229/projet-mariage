@@ -38,6 +38,24 @@ try {
     $conn->exec($sql_categories);
     echo "✓ Table 'categories' créée avec succès<br>";
     
+    //session users 
+    $sql_users = "
+    CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        full_name VARCHAR(100) NULL,
+        role ENUM('admin', 'user') DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP NULL,
+        INDEX idx_username (username),
+        INDEX idx_email (email)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+    $conn->exec($sql_users);
+    echo "✓ Table 'users' créée avec succès<br>";
+
     // Création de la table des dépenses
     $sql_expenses = "
     CREATE TABLE IF NOT EXISTS expenses (
@@ -62,10 +80,10 @@ try {
     
     // Insertion des catégories
     $categories = [
-        ['name' => 'Prise de contact avec la belle famille', 'color' => '#3498db','icon' => 'fas fa-handshake', 'order' => 1],
+        ['name' => 'Connaissance', 'color' => '#3498db','icon' => 'fas fa-handshake', 'order' => 1],
         ['name' => 'Dot', 'color' => '#9b59b6','icon' => 'fas fa-gift', 'order' => 2],
         ['name' => 'Mairie', 'color' => '#e74c3c', 'icon' => 'fas fa-landmark', 'order' => 3],
-        ['name' => 'Célébration à l\'église', 'color' => '#2ecc71','icon' => 'fas fa-church', 'order' => 4],
+        ['name' => 'Bénédiction nuptiale', 'color' => '#2ecc71','icon' => 'fas fa-church', 'order' => 4],
         ['name' => 'Logistique', 'color' => '#1abc9c', 'icon' => 'fas fa-truck', 'order' => 5],
         ['name' => 'Réception', 'color' => '#f39c12','icon' => 'fas fa-glass-cheers', 'order' => 6],
         ['name' => 'Coût indirect et imprévus','color' => '#95a5a6', 'icon' => 'fas fa-exclamation-triangle', 'order' => 7]

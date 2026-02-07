@@ -666,3 +666,34 @@ input:focus, select:focus, textarea:focus {
 .highlight-row {
     background: #fff9e6 !important;
 }
+
+/* Auth Section */
+.auth-section {
+    position: relative;
+    z-index: 10;
+}
+
+.btn-login, .btn-logout {
+    padding: 10px 20px;
+    border: 2px solid white;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.btn-login:hover, .btn-logout:hover {
+    background: white;
+    color: var(--primary);
+}
+
+.btn-logout {
+    font-family: 'Lato', sans-serif;
+}
